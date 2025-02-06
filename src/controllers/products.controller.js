@@ -1,22 +1,23 @@
 const { log } = require('node:console');
 const ProductManager = require('../data/products');
 const productManager = new ProductManager();
+const fs = require('fs');
 
 const getProducts = async (req, res) => {
-    res.status(200).json('productos');
 };
 
+/* 
 const getProductById = async (req, res) => {
     res.send('id')
-/*     try {
+    try {
         const product = productManager.getProductById(parseInt(req.params.pid));
         res.json(product);
     } catch (error) {
         res.status(404).json({ error: error.message });
-    } */
+    }
 };
 
-const addProduct = async (req, res) => {
+/* const addProduct = async (req, res) => {
     try {
         res.status(200).json('TODOS LOS PRODUCTOS')
 
@@ -50,13 +51,13 @@ const deleteProduct = async (req, res) => {
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
-};
+}; */
 
 // Exportar controladores
 module.exports = {
     getProducts,
-    getProductById,
+/*     getProductById,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct */
 };

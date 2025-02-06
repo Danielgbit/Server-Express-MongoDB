@@ -1,0 +1,44 @@
+{
+    "productos": [
+      {
+        "id": 1,
+        "nombre": "Laptop Gamer",
+        "marca": "Asus",
+        "precio": 1200.00,
+        "stock": 15,
+        "categorias": ["Electrónica", "Computadoras"]
+      },
+      {
+        "id": 2,
+        "nombre": "Smartphone",
+        "marca": "Samsung",
+        "precio": 800.00,
+        "stock": 30,
+        "categorias": ["Electrónica", "Teléfonos"]
+      },
+      {
+        "id": 3,
+        "nombre": "Televisor 4K",
+        "marca": "LG",
+        "precio": 900.00,
+        "stock": 20,
+        "categorias": ["Electrónica", "Televisores"]
+      },
+      {
+        "id": 4,
+        "nombre": "Tablet",
+        "marca": "Apple",
+        "precio": 600.00,
+        "stock": 25,
+        "categorias": ["Electrónica", "Tablets"]
+      },
+      {
+        "id": 5,
+        "nombre": "Auriculares Inalámbricos",
+        "marca": "Sony",
+        "precio": 150.00,
+        "stock": 50,
+        "categorias": ["Electrónica", "Accesorios"]
+      }
+    ]
+  }

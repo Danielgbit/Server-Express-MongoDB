@@ -3,12 +3,16 @@ const path = require('path');
 
 class ProductManager {
     constructor() {
-        this.path = path.join(__dirname, 'products.json');
-        this.products = this.loadProducts();
-        this.currentId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
+        this.path = path.join(__dirname, './products.json');
+        
+        /*         this.products = this.loadProducts();
+        this.currentId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1; */
     }
-
-    loadProducts() {
+    
+    getProducts() {
+        return this.products;
+    }
+     loadProducts() {
         try {
             const data = fs.readFileSync(this.path, 'utf-8');
             return JSON.parse(data);
@@ -16,16 +20,13 @@ class ProductManager {
             return [];
         }
     }
-
+/*
     saveProducts() {
         fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
     }
+ */
 
-    getProducts() {
-        return this.products;
-    }
-
-    getProductById(id) {
+/*     getProductById(id) {
         const product = this.products.find(p => p.id === id);
         if (!product) throw new Error('Producto no encontrado');
         return product;
@@ -75,7 +76,7 @@ class ProductManager {
         const deletedProduct = this.products.splice(productIndex, 1);
         this.saveProducts();
         return deletedProduct[0];
-    }
+    } */
 }
 
 module.exports = ProductManager;

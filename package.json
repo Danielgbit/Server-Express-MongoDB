@@ -1,0 +1,30 @@
+{
+  "name": "server-express-mongodb",
+  "version": "1.0.0",
+  "main": "index.js",
+
+  "scripts": {
+      "start": "node app.js",
+      "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Danielgbit/Server-Express-MongoDB.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Danielgbit/Server-Express-MongoDB/issues"
+  },
+  "homepage": "https://github.com/Danielgbit/Server-Express-MongoDB#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "uid": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
