@@ -4,6 +4,8 @@ const productManager = new ProductManager();
 const fs = require('fs');
 
 const getProducts = async (req, res) => {
+    const data = productManager.getProducts();
+    return res.status(200).send(data);
 };
 
 /* 

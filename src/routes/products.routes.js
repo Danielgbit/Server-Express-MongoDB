@@ -3,10 +3,10 @@ const router = express.Router();
 
 const {
     getProducts,
-    getProductById,
+/*     getProductById,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct */
 } = require('../controllers/products.controller');
 
 router.get('/', getProducts);  //Llamar todos los productos

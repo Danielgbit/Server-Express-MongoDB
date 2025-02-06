@@ -3,23 +3,21 @@ const path = require('path');
 
 class ProductManager {
     constructor() {
-        this.path = path.join(__dirname, './products.json');
+        this.path = path.join(__dirname, '../models/products.json');
         
         /*         this.products = this.loadProducts();
         this.currentId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1; */
     }
-    
+
+
     getProducts() {
-        return this.products;
-    }
-     loadProducts() {
         try {
             const data = fs.readFileSync(this.path, 'utf-8');
             return JSON.parse(data);
         } catch (error) {
             return [];
         }
-    }
+    } 
 /*
     saveProducts() {
         fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
