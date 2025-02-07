@@ -65,28 +65,20 @@ class CartManager {
 removeProductFromCart(cartId, productId) {
   const cart = this.getCartById(cartId);
 
-  console.log(cart);
-  
-
-/*   if (!cart) {
+  console.log('Carrito por id', cart);
+  if (!cart) {
     throw new Error(`Carrito con ID ${cartId} no encontrado`);
   }
 
-  // Buscar el índice del producto en el carrito
   const productIndex = cart.products.findIndex(p => p.product === productId);
 
-  // Si el producto no existe, lanzar un error
   if (productIndex === -1) {
     throw new Error(`Producto con ID ${productId} no encontrado en el carrito`);
   }
 
-  // Eliminar el producto del carrito
   cart.products.splice(productIndex, 1);
 
-  // Guardar el carrito actualizado
-  this.saveCart(cart);
-
-  console.log(`Producto ${productId} eliminado del carrito ${cartId}`); */
+  fs.writeFileSync(this.path, JSON.stringify(cart, null, 2), 'utf-8');
 }
 }
 

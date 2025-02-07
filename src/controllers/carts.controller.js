@@ -41,14 +41,9 @@ const removeProductFromCart = async (req, res) => {
     try {
       const { cartId, productId } = req.params;
 
-    /*   cartManager.removeProductFromCart(cartId, productId); */
-
-      console.log(cartId, productId);
-      
-      
-/*       const updatedCart = cartManager.getCartById(cartId); */
+      cartManager.removeProductFromCart(cartId, productId);
   
-/*       res.status(200).json(updatedCart); */
+      res.status(410).send('deleted product in cart successfully');
   
     } catch (error) {
       res.status(404).json({ error: error.message });
