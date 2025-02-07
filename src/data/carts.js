@@ -63,11 +63,12 @@ class CartManager {
 }
 
 removeProductFromCart(cartId, productId) {
-  // Obtener el carrito por su ID
   const cart = this.getCartById(cartId);
 
-  // Verificar si el carrito existe
-  if (!cart) {
+  console.log(cart);
+  
+
+/*   if (!cart) {
     throw new Error(`Carrito con ID ${cartId} no encontrado`);
   }
 
@@ -85,7 +86,7 @@ removeProductFromCart(cartId, productId) {
   // Guardar el carrito actualizado
   this.saveCart(cart);
 
-  console.log(`Producto ${productId} eliminado del carrito ${cartId}`);
+  console.log(`Producto ${productId} eliminado del carrito ${cartId}`); */
 }
 }
 

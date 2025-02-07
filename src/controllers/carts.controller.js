@@ -41,16 +41,15 @@ const removeProductFromCart = async (req, res) => {
     try {
       const { cartId, productId } = req.params;
 
+    /*   cartManager.removeProductFromCart(cartId, productId); */
+
       console.log(cartId, productId);
       
-/*   
-      // Eliminar el producto del carrito
-      cartManager.removeProductFromCart(cartId, productId);
+      
+/*       const updatedCart = cartManager.getCartById(cartId); */
   
-      // Obtener el carrito actualizado
-      const updatedCart = cartManager.getCartById(cartId);
+/*       res.status(200).json(updatedCart); */
   
-      res.status(200).json(updatedCart); // Devolver el carrito actualizado */
     } catch (error) {
       res.status(404).json({ error: error.message });
     }
