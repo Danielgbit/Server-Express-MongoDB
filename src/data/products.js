@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid'); // Importar la función v4 de uuid
 
 class ProductManager {
     constructor() {
@@ -26,10 +27,10 @@ class ProductManager {
         }
     
         const newProduct = {
-            id: this.currentId++,
+            id: uuidv4(),
             title,
             description,
-            code,
+            code:`TS-${Math.floor(performance.now() * 1000)}`,
             price,
         };
     
@@ -38,20 +39,33 @@ class ProductManager {
         return newProduct;
     }
 
-    
+
     saveProducts() {
         fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
     }
-    /*
- */
 
-/*     getProductById(id) {
-        const product = this.products.find(p => p.id === id);
-        if (!product) throw new Error('Producto no encontrado');
-        return product;
+
+    getProductById(id) {
+        try {
+            const product = this.products.find(p => p.id === id);
+            if (!product) throw new Error('Producto no encontrado');
+            return product;
+        } catch (error) {
+            return [];
+        }
     }
 
-
+    deleteProduct(id) {
+        const productIndex = this.products.findIndex(p => p.id === id);
+        if (productIndex === -1) {
+            throw new Error('Producto no encontrado');
+        }
+        const deletedProduct = this.products.splice(productIndex, 1);
+        this.saveProducts();
+        return deletedProduct[0];
+    }
+    
+/*
     updateProduct(id, updatedFields) {
         const productIndex = this.products.findIndex(p => p.id === id);
         if (productIndex === -1) {
@@ -67,17 +81,7 @@ class ProductManager {
         this.saveProducts();
         return this.products[productIndex];
     }
-
-    deleteProduct(id) {
-        const productIndex = this.products.findIndex(p => p.id === id);
-        if (productIndex === -1) {
-            throw new Error('Producto no encontrado');
-        }
-
-        const deletedProduct = this.products.splice(productIndex, 1);
-        this.saveProducts();
-        return deletedProduct[0];
-    } */
+} */
 }
 
 module.exports = ProductManager;

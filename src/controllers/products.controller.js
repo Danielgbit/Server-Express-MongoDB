@@ -1,24 +1,24 @@
 const ProductManager = require('../data/products');
 const productManager = new ProductManager();
-const fs = require('fs');
 
 const getProducts = async (req, res) => {
     const data = productManager.getProducts();
     return res.status(200).send(data);
-    };
+};
 
 const addProduct = async (req, res) => {
         try {
             console.log("Cuerpo recibido:", req.body);
 
-            if (!req.body.title || !req.body.description || !req.body.code || !req.body.price) {
+            const { title, description, price } = req.body;
+
+            if (!title || !description || !price) {
                 return res.status(400).json({ error: "Todos los campos son obligatorios" });
             }
 
             productManager.addProduct({
                 title: req.body.title,
                 description: req.body.description,
-                code: req.body.code,
                 price: req.body.price
             })
             
@@ -27,19 +27,34 @@ const addProduct = async (req, res) => {
             res.status(400).json({ error: error.message });
         }
 };
-    
-    /* 
+
 const getProductById = async (req, res) => {
-    res.send('id')
     try {
-        const product = productManager.getProductById(parseInt(req.params.pid));
-        res.json(product);
+        if (!req.params.id) {
+            return res.status(400).json('id not found');
+        };
+
+        productManager.getProductById(req.params.id);
+        const data = await getProductById();
+        return res.status(200).send(data)
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        res.status(400).send('id not found');
     }
 };
 
 
+const deleteProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        productManager.deleteProduct(productId);
+        res.status(410).send('Product delete successfully')
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+}
+
+
+/*
 const updateProduct = async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
@@ -55,23 +70,14 @@ const updateProduct = async (req, res) => {
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
-};
-
-const deleteProduct = async (req, res) => {
-    try {
-        const productId = parseInt(req.params.pid);
-        const deletedProduct = productManager.deleteProduct(productId);
-        res.json(deletedProduct);
-    } catch (error) {
-        res.status(404).json({ error: error.message });
-    }
-}; */
+};*/
 
 // Exportar controladores
 module.exports = {
     getProducts,
     addProduct,
-/*     getProductById,
-    updateProduct,
+    getProductById,
+    deleteProduct
+/*  updateProduct,
     deleteProduct */
 };
