@@ -5,19 +5,19 @@ const cartManager = new CartManager();
 const productManager = new ProductManager();
 
 const createCart = async (req, res) => {
-/*     try {
+    try {
         const newCart = cartManager.createCart();
-        res.status(201).json(newCart);
+        if(!newCart){ return res.status(404).send('failed created cart'); }
+
+        res.status(201).send('cart created successfully');
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } */
+    }
 };
 
 const getCart = async (req, res) => {
     try {
         const cart = cartManager.getCartById(req.params.id);
-        console.log(cart);
-        
         res.status(200).send(cart);
     } catch (error) {
         res.status(404).json({ error: error.message });
@@ -25,22 +25,41 @@ const getCart = async (req, res) => {
 };
 
 const addProductToCart = async (req, res) => {
-/*     try {
-        const cartId = parseInt(req.params.cid);
-        const productId = parseInt(req.params.pid);
+    try {
+        const cartId = req.params.cartId;
+        const productId = req.params.productId;
+
+        cartManager.addProductToCart(cartId, productId);
         
-        // Verificar si el producto existe
-        productManager.getProductById(productId);s
-        
-        const cart = cartManager.addProductToCart(cartId, productId);
-        res.json(cart);
+        res.status(201).send('add product successfull');
     } catch (error) {
         res.status(404).json({ error: error.message });
-    } */
+    }
 };
+
+const removeProductFromCart = async (req, res) => {
+    try {
+      const { cartId, productId } = req.params;
+
+      console.log(cartId, productId);
+      
+/*   
+      // Eliminar el producto del carrito
+      cartManager.removeProductFromCart(cartId, productId);
+  
+      // Obtener el carrito actualizado
+      const updatedCart = cartManager.getCartById(cartId);
+  
+      res.status(200).json(updatedCart); // Devolver el carrito actualizado */
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  };
+
 
 module.exports = {
     createCart,
     getCart,
-    addProductToCart
+    addProductToCart,
+    removeProductFromCart
 };
