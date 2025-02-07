@@ -4,12 +4,12 @@ const path = require('path');
 class ProductManager {
     constructor() {
         this.path = path.join(__dirname, '../models/products.json');
-        
-        /*         this.products = this.loadProducts();
+        this.products = this.getProducts();
+        /*
         this.currentId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1; */
     }
-
-
+    
+    
     getProducts() {
         try {
             const data = fs.readFileSync(this.path, 'utf-8');
@@ -18,10 +18,31 @@ class ProductManager {
             return [];
         }
     } 
-/*
+
+    addProduct(title, description, code, price) {
+        const existingProduct = this.products.find(p => p.code === code);
+        if (existingProduct) {
+            throw new Error('El código del producto ya existe');
+        }
+    
+        const newProduct = {
+            id: this.currentId++,
+            title,
+            description,
+            code,
+            price,
+        };
+    
+        this.products.push(newProduct);
+        this.saveProducts();
+        return newProduct;
+    }
+
+    
     saveProducts() {
         fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf-8');
     }
+    /*
  */
 
 /*     getProductById(id) {
@@ -30,24 +51,6 @@ class ProductManager {
         return product;
     }
 
-    addProduct(title, description, code, price) {
-        const existingProduct = this.products.find(p => p.code === code);
-        if (existingProduct) {
-            throw new Error('El código del producto ya existe');
-        }
-
-        const newProduct = {
-            id: this.currentId++,
-            title,
-            description,
-            code,
-            price,
-        };
-
-        this.products.push(newProduct);
-        this.saveProducts();
-        return newProduct;
-    }
 
     updateProduct(id, updatedFields) {
         const productIndex = this.products.findIndex(p => p.id === id);
