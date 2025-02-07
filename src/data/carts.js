@@ -1,11 +1,14 @@
+const { log } = require("console");
+const fs = require("fs");
+const path = require("path");
 // src/data/carts.js
 class CartManager {
-    constructor() {
-        this.carts = [];
-        this.currentId = 1;
-    }
+  constructor() {
+    this.path = path.join(__dirname, "../models/carts.json");
+    this.carts = this.getCarts(); // Inicializa this.carts di
+  }
 
-    createCart() {
+      createCart() {
         const newCart = {
             id: this.currentId++,
             products: []
@@ -14,13 +17,28 @@ class CartManager {
         return newCart;
     }
 
-    getCartById(id) {
-        const cart = this.carts.find(c => c.id === id);
-        if(!cart) throw new Error('Carrito no encontrado');
-        return cart;
+  getCarts() {
+    try {
+      const data = fs.readFileSync(this.path, "utf-8");
+      return JSON.parse(data);
+    } catch (error) {
+      // Si el archivo no existe o hay un error, devuelve un array vacío
+      return [];
     }
+  }
 
-    addProductToCart(cartId, productId) {
+  getCartById(id) {
+    id = Number(id);
+    // Buscar el carrito por su id
+    const cart = this.carts.find((c) => c.id === id);
+    if (!cart) {
+      console.log("Carrito no encontrado");
+      return null;
+    }
+    // Devolver el carrito encontrado
+    return cart;
+  }
+  /*     addProductToCart(cartId, productId) {
         const cart = this.getCartById(cartId);
         const existingProduct = cart.products.find(p => p.product === productId);
         
@@ -33,7 +51,7 @@ class CartManager {
             });
         }
         return cart;
-    }
+    } */
 }
 
 module.exports = CartManager;

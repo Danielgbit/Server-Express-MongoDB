@@ -14,12 +14,14 @@ const createCart = async (req, res) => {
 };
 
 const getCart = async (req, res) => {
-/*     try {
-        const cart = cartManager.getCartById(parseInt(req.params.cid));
-        res.json(cart);
+    try {
+        const cart = cartManager.getCartById(req.params.id);
+        console.log(cart);
+        
+        res.status(200).send(cart);
     } catch (error) {
         res.status(404).json({ error: error.message });
-    } */
+    }
 };
 
 const addProductToCart = async (req, res) => {
