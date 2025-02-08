@@ -18,9 +18,8 @@ nav {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  background-color: black;
-  margin: 0;
-  padding: 5px 30px;
+  background-color: rgba(0, 0, 0, 0.523);
+    padding: 30px;
 }
 
 nav h1 {
@@ -41,6 +40,7 @@ nav ul li a {
   text-decoration: none;
   font-size: 12px;
   font-weight: 300;
+  margin-right: 20px;
 }
 
 nav ul li a:hover {
@@ -226,5 +226,12 @@ body .custom-table {
 
 .body-productDetail .card-text {
     font-size: 12px;
+}
+
+.body-productDetail .card-title-productDetail{
+    background-color: rgba(0, 0, 0, 0.148);
+    border-radius: 10px;
+    color: black;
+    padding: 5px 0px;
 }
 
