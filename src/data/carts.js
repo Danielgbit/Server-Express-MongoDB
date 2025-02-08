@@ -41,7 +41,9 @@ class CartManager {
 
  
   addProductToCart(cartId, productId) {
-    const cart = this.getCartById(cartId);
+    const carts = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
+
+    const cart = carts.find(c => c.id === cartId);
 
     if (!cart) {
         throw new Error(`Carrito con ID ${cartId} no encontrado`);
@@ -59,13 +61,14 @@ class CartManager {
         cart.products.push(newProduct);
     }
 
-    fs.writeFileSync(this.path, JSON.stringify(cart, null, 2), 'utf-8');
+    fs.writeFileSync(this.path, JSON.stringify(carts, null, 2), 'utf-8');
 }
 
 removeProductFromCart(cartId, productId) {
-  const cart = this.getCartById(cartId);
+  const carts = JSON.parse(fs.readFileSync(this.path, 'utf-8'));
 
-  console.log('Carrito por id', cart);
+  const cart = carts.find(c => c.id === cartId);
+
   if (!cart) {
     throw new Error(`Carrito con ID ${cartId} no encontrado`);
   }
@@ -78,7 +81,8 @@ removeProductFromCart(cartId, productId) {
 
   cart.products.splice(productIndex, 1);
 
-  fs.writeFileSync(this.path, JSON.stringify(cart, null, 2), 'utf-8');
+  fs.writeFileSync(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+
 }
 }
 
