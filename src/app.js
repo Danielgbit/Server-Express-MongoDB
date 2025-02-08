@@ -7,18 +7,14 @@ const { engine } = require("express-handlebars");
 const productRouter = require("./routes/products.routes");
 const cartRouter = require("./routes/carts.routes");
 
-// 🔹 Importar la lista de productos desde un módulo separado
-const { getProducts, deleteProduct, addProduct, getProductById } = require("./services/productService");
+const { getProducts, deleteProduct, addProduct, getProductById, updateProduct } = require("./services/productService");
 
-// Inicializar la aplicación Express
 const app = express();
 const port = 8080;
 
-// Crear el servidor HTTP y Socket.IO
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-// 🔹 Configurar Handlebars con una estructura más limpia
 app.engine("handlebars", engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
@@ -54,6 +50,16 @@ app.get("/products/:id", async (req, res) => {
 });
 
 
+// Ruta para mostrar el formulario de edición
+app.get("/editproduct/:id", async (req, res) => {
+  const productId = req.params.id;
+  const product = await getProductById(productId);
+  if (product) {
+      res.render("editProduct", { product });
+  } else {
+      res.status(404).send("Producto no encontrado");
+  }
+});
 
 io.on("connection", async (socket) => {
   console.log("Cliente conectado");
@@ -69,10 +75,21 @@ io.on("connection", async (socket) => {
   socket.on("addProduct", async (product) => {
       try {
           await addProduct(product);
-/*           const products = await getProducts();
-          io.emit("updateProducts", products); */
+          const products = await getProducts();
+          io.emit("updateProducts", products);
       } catch (error) {
           console.error("Error al agregar producto:", error);
+      }
+  });
+
+  // Escuchar evento de editar producto
+  socket.on("editProduct", async (updatedProduct) => {
+      try {
+          await updateProduct(updatedProduct.id, updatedProduct);
+          const products = await getProducts();
+          io.emit("updateProducts", products); // Enviar los productos actualizados a todos los clientes
+      } catch (error) {
+          console.error("Error al actualizar producto:", error);
       }
   });
 
@@ -88,14 +105,13 @@ io.on("connection", async (socket) => {
   });
 });
 
-
 // Rutas de la API
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 
 // Iniciar el servidor HTTP
 httpServer.listen(port, () => {
-  console.log(`✅ Servidor en ejecución: http://localhost:${port}`);
+  console.log(`Servidor en ejecución: http://localhost:${port}`);
 });
 
 // Exportar la aplicación para pruebas

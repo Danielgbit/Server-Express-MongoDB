@@ -73,23 +73,28 @@ class ProductManager {
     }
   }
 
-  /*
+  
     updateProduct(id, updatedFields) {
-        const productIndex = this.products.findIndex(p => p.id === id);
+
+        const fileContent = fs.readFileSync(this.path, 'utf-8');
+        const products = JSON.parse(fileContent);
+
+        const productIndex = products.findIndex(p => p.id === id);
         if (productIndex === -1) {
             throw new Error('Producto no encontrado');
         }
 
-        this.products[productIndex] = {
-            ...this.products[productIndex],
+        products[productIndex] = {
+            ...products[productIndex],
             ...updatedFields,
-            id: this.products[productIndex].id, // Asegurar que el ID no se modifique
+            id: products[productIndex].id,
         };
 
-        this.saveProducts();
-        return this.products[productIndex];
+        fs.writeFileSync(this.path, JSON.stringify(products, null, 2), 'utf-8');
+
+        return products[productIndex];
     }
-} */
+
 }
 
 module.exports = ProductManager;

@@ -47,30 +47,24 @@ const deleteProduct = async (req, res) => {
 }
 
 
-/*
+
 const updateProduct = async (req, res) => {
     try {
-        const productId = parseInt(req.params.pid);
+        const productId = req.params.id;
         const updatedFields = req.body;
-
-        // Validar que no se intente actualizar el ID
-        if (updatedFields.id) {
-            return res.status(400).json({ error: 'No se puede actualizar el ID del producto' });
-        }
-
+        
         const updatedProduct = productManager.updateProduct(productId, updatedFields);
-        res.json(updatedProduct);
+        res.status(200).json(updatedProduct);
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
-};*/
+};
 
 // Exportar controladores
 module.exports = {
     getProducts,
     addProduct,
     getProductById,
-    deleteProduct
-/*  updateProduct,
-    deleteProduct */
+    deleteProduct,
+    updateProduct
 };

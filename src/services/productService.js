@@ -24,6 +24,17 @@ const getProductById = async (id) => {
     }
 };
 
+// Actualizar un producto por ID
+const updateProduct = async (id, updatedProduct) => {
+    try {
+        const response = await axios.put(`${API_URL}/update/${id}`, updatedProduct);
+        return response.data;
+    } catch (error) {
+        console.error(`Error al actualizar el producto con ID ${id}:`, error.message);
+        return null;
+    }
+};
+
 // Agregar un producto
 const addProduct = async (product) => {
     try {
@@ -49,4 +60,4 @@ const deleteProduct = async (id) => {
 };
 
 // Exportar funciones
-module.exports = { getProducts, getProductById, addProduct, deleteProduct };
+module.exports = { getProducts, getProductById, addProduct, deleteProduct, updateProduct };
