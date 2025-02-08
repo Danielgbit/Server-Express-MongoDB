@@ -7,13 +7,15 @@ socket.on("updateProducts", (products) => {
 
     products.forEach(product => {
         const li = document.createElement("li");
+        li.classList.add("card-product");
         // Hacer que el título del producto sea un enlace a la vista de detalle
-        li.innerHTML = `<a href="/products/${product.id}" style="text-decoration: none; color: inherit;">
-                            <strong>${product.title}</strong> - $${product.price}
+        li.innerHTML = `<a href="/products/${product.id}">
+                            <strong class="title">${product.title}</strong>
+                            <strong class="price">$ ${product.price}</strong>
                         </a>
-                        <button onclick="deleteProduct('${product.id}')">❌</button>
+                        <button class="button-delete-p" onclick="deleteProduct('${product.id}')"><i class="fa-solid fa-circle-minus"></i></button>
                         <a href="/editproduct/${product.id}">
-                            <button>✏️</button> <!-- Botón para editar -->
+                            <button class="button-update-p"><i class="fa-solid fa-pen"></i></button> <!-- Botón para editar -->
                         </a>`;
         productList.appendChild(li);
     });

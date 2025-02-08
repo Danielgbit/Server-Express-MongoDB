@@ -1,13 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lexend:wght@100..900&display=swap');
+
+*{
+    font-family: Poppins;
+}
 
 body {
-    background-color: antiquewhite;
-    box-sizing: border-box;
-    font-family: Poppins;
     margin: 0;
-    padding: 0;
     font-style: none;
     text-decoration: none;
+    background-image: linear-gradient(15deg, #13547a 0%, #365450 100%);
+    height: 100vh;
+
 }
 
 nav {
@@ -22,6 +26,9 @@ nav {
 
 nav h1 {
     color: white;
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: uppercase;
 }
 
 nav ul {
@@ -33,7 +40,7 @@ nav ul li a {
     color: white;
     font-style: none;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 300;
 }
 
@@ -42,4 +49,145 @@ nav ul li a:hover{
     background-color: white;
     border-radius: 10px;
     padding: 10px;
+}
+
+.product-list {
+    padding: 20px;
+    color: white;
+    letter-spacing: -2px;
+}
+
+/* PRODUCTS TABLE */
+
+body .custom-table {
+    width: 97%; /* Ancho del 80% del contenedor padre */
+    margin: 0 auto; /* Centrar la tabla horizontalmente */
+    font-size: 13px;
+}
+
+.title-table {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.text-product-table {
+    font-weight: 200;
+    font-size: 11px;
+}
+
+.button-realTimeP {
+    background-color: black;
+    text-decoration: none;
+    color: white;
+    padding: 12px;
+    font-size: 11px;
+    border-radius: 20px;
+    font-family: "Lexend", serif;
+    display: flex;
+    width: 14%;
+    margin: 30px 20px;
+}
+
+.button-realTimeP:hover {
+    background-color: white;
+    color: black;
+}
+
+
+.rights-reserved{
+    color: white;
+    font-family: Poppins;
+    letter-spacing: -0.5px;
+    font-size: 12px;
+    display: flex;
+    padding: 20px;
+}
+
+.card-product{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    justify-content: space-between;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.288);
+    border-radius: 20px;
+    margin: 20px;
+}
+
+.card-product a {
+    display: flex;
+    padding: 10px;
+    gap: 100px;
+    text-decoration: none;
+    color: white;
+
+}
+
+.list-title-realTime {
+    color: white;
+    padding: 20px;
+    color: white;
+    letter-spacing: -2px;
+}
+
+.card-product a .title {
+    font-size: 14px;
+    font-weight: 200;
+
+}
+
+.card-product a .price {
+    letter-spacing: 2px;
+}
+
+.card-product .button-delete-p,.card-product .button-update-p  {
+    color: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+}
+
+.card-product .button-delete-p:hover, .card-product .button-update-p:hover {
+    color: black;
+}
+
+#productForm {
+    width: 20%;
+    background-color: rgba(0, 0, 0, 0.395);
+    padding: 20px;
+    border-radius: 25px;
+    margin: 0 auto;
+    color: white;
+    font-family: "Lexend", serif;
+}
+
+#productForm div label {
+    font-family: "Lexend", serif;
+    font-weight: 200;
+    
+}
+
+#productForm div input::placeholder {
+    font-size: 11px;
+}
+
+.body-realTime {
+    height: 100%;
+}
+
+#productForm .button-created-p {
+    background-color: rgba(0, 0, 0, 0.292);
+}
+
+.title-addProduct {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    letter-spacing: -2px;
+    font-size: 1.5rem;
 }
