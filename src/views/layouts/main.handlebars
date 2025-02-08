@@ -3,11 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{titulo}}</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/src/public/index.js"></script>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    {{{body}}} <!-- Aquí se insertarán las vistas -->
+    <header>
+        <h1>Mi Tienda</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/realtimeproducts">Productos en Tiempo Real</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {{{body}}}  <!-- Aquí se inyectará el contenido de cada vista -->
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mi Tienda - Todos los derechos reservados Project CoderHouse</p>
+    </footer>
 </body>
 </html>

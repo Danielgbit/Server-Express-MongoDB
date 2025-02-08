@@ -3,48 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos en Tiempo Real</title>
+    <title>Lista de Productos en Tiempo Real</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Productos en Tiempo Real</h1>
-    <ul id="product-list">
-        {{#each products}}
-            <li>{{this.name}} - ${{this.price}} <button onclick="deleteProduct('{{this.id}}')">Eliminar</button></li>
-        {{/each}}
-    </ul>
+    <h1>Lista de Productos en Tiempo Real</h1>
 
-    <form id="add-product-form">
-        <input type="text" id="product-name" placeholder="Nombre del producto" required>
-        <input type="number" id="product-price" placeholder="Precio del producto" required>
-        <button type="submit">Agregar Producto</button>
+    <ul id="productList"></ul>
+
+    <h2>Agregar Producto</h2>
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Nombre del producto" required>
+        <input type="number" id="productPrice" placeholder="Precio" required>
+        <button type="submit">Agregar</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-
-        // Escuchar actualizaciones de la lista de productos
-        socket.on('updateProducts', (products) => {
-            const productList = document.getElementById('product-list');
-            productList.innerHTML = products.map(product => `
-                <li>${product.name} - $${product.price} <button onclick="deleteProduct('${product.id}')">Eliminar</button></li>
-            `).join('');
-        });
-
-        // Agregar un nuevo producto
-        document.getElementById('add-product-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const productName = document.getElementById('product-name').value;
-            const productPrice = document.getElementById('product-price').value;
-            const productId = Date.now().toString(); // Simular un ID único
-            socket.emit('addProduct', { id: productId, name: productName, price: productPrice });
-            document.getElementById('add-product-form').reset();
-        });
-
-        // Eliminar un producto
-        function deleteProduct(productId) {
-            socket.emit('deleteProduct', productId);
-        }
-    </script>
+    <script src="/js/realTimeProducts.js"></script>
 </body>
 </html>
