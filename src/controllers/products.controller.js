@@ -8,19 +8,13 @@ const getProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
         try {
-            console.log("Cuerpo recibido:", req.body);
-
             const { title, description, price } = req.body;
 
             if (!title || !description || !price) {
                 return res.status(400).json({ error: "Todos los campos son obligatorios" });
             }
 
-            productManager.addProduct({
-                title: req.body.title,
-                description: req.body.description,
-                price: req.body.price
-            })
+            productManager.addProduct(req.body);
             
             res.status(201).send('Product successfully created');
         } catch (error) {

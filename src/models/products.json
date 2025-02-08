@@ -1,29 +1,20 @@
 [
   {
-    "id": "e60cf023-5b36-4f24-b170-084d131a80e3",
-    "title": {
-      "title": "Desodorante",
-      "description": "sdasdasdasdasd",
-      "price": "200"
-    },
-    "code": "TS-258188946"
+    "id": "f7451105-eae0-4b06-8eb2-cc14db68a12a",
+    "title": "Desodorante",
+    "description": "sdasdasdasdasd",
+    "price": "200"
   },
   {
-    "id": "12b62a74-4c5f-46ab-9967-f3e4d122d789",
-    "title": {
-      "title": "Desodorante",
-      "description": "sdasdasdasdasd",
-      "price": "200"
-    },
-    "code": "TS-23573817"
+    "id": "6d8b7a1f-3c14-44a8-a97e-1b88a134584c",
+    "title": "Desodorante",
+    "description": "sdasdasdasdasd",
+    "price": "200"
   },
   {
-    "id": "fe7b10ff-f40b-4083-b1ae-aa6a680c6a77",
-    "title": {
-      "title": "Desodorante",
-      "description": "sdasdasdasdasd",
-      "price": "200"
-    },
-    "code": "TS-1692729"
+    "id": "d6f6ca24-7efc-43d9-af60-e0289584fe95",
+    "title": "Desodorante",
+    "description": "sdasdasdasdasd",
+    "price": "200"
   }
 ]
