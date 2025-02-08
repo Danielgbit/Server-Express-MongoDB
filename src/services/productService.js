@@ -6,7 +6,6 @@ const API_URL = "http://localhost:8080/api/products"; // Ajusta según tu config
 const getProducts = async () => {
     try {
         const response = await axios.get(`${API_URL}/`);
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error al obtener productos:", error.message);
@@ -39,8 +38,10 @@ const addProduct = async (product) => {
 // Eliminar un producto por ID
 const deleteProduct = async (id) => {
     try {
+        
         const response = await axios.delete(`${API_URL}/delete/${id}`);
-        return response.data;
+        console.log(response);
+        
     } catch (error) {
         console.error(`Error al eliminar el producto con ID ${id}:`, error.message);
         return null;

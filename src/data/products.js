@@ -44,7 +44,9 @@ class ProductManager {
 
   getProductById(id) {
     try {
-      const product = this.products.find((p) => p.id === id);
+      const fileContent = fs.readFileSync(this.path, 'utf-8');
+      const products = JSON.parse(fileContent);
+      const product = products.find((p) => p.id === id);
       if (!product) throw new Error("Producto no encontrado");
       return product;
     } catch (error) {
@@ -53,13 +55,22 @@ class ProductManager {
   }
 
   deleteProduct(id) {
-    const productIndex = this.products.findIndex((p) => p.id === id);
-    if (productIndex === -1) {
-      throw new Error("Producto no encontrado");
+
+    try {
+      const fileContent = fs.readFileSync(this.path, 'utf-8');
+      const products = JSON.parse(fileContent);
+    
+      const productIndex = products.findIndex((p) => p.id === id);
+      if (productIndex === -1) {
+        throw new Error("Producto no encontrado");
+      }
+      const deletedProduct = products.splice(productIndex, 1);
+      fs.writeFileSync(this.path, JSON.stringify(products, null, 2), 'utf-8');
+      return deletedProduct[0];
+    } catch (error) {
+      console.log(error);
+      
     }
-    const deletedProduct = this.products.splice(productIndex, 1);
-    fs.writeFileSync(this.path, JSON.stringify(products, null, 2), 'utf-8');
-    return deletedProduct[0];
   }
 
   /*

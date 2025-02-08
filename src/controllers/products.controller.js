@@ -8,6 +8,7 @@ const getProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
         try {
+
             const { title, description, price } = req.body;
 
             if (!title || !description || !price) {
@@ -27,10 +28,8 @@ const getProductById = async (req, res) => {
         if (!req.params.id) {
             return res.status(400).json('id not found');
         };
-
-        productManager.getProductById(req.params.id);
-        const data = await getProductById();
-        return res.status(200).send(data)
+        const data = productManager.getProductById(req.params.id);
+        return res.status(200).send(data);
     } catch (error) {
         res.status(400).send('id not found');
     }

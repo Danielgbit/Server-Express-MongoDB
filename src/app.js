@@ -8,7 +8,7 @@ const productRouter = require("./routes/products.routes");
 const cartRouter = require("./routes/carts.routes");
 
 // 🔹 Importar la lista de productos desde un módulo separado
-const { getProducts } = require("./services/productService");
+const { getProducts, deleteProduct, addProduct, getProductById } = require("./services/productService");
 
 // Inicializar la aplicación Express
 const app = express();
@@ -35,33 +35,59 @@ app.get("/", async (req, res) => {
   res.render("index", { title: "Inicio", products });
 });
 
-// 🔹 Ruta para la vista en tiempo real
-app.get("/realtimeproducts", (req, res) => res.render("realTimeProducts", { products }));
+
+app.get("/realtimeproducts", async (req, res) => {
+  const products = await getProducts();
+  res.render("realTimeProducts", { title: "Productos en Tiempo Real", products });
+});
+
+// Ruta para mostrar el detalle de un producto
+app.get("/products/:id", async (req, res) => {
+  const productId = req.params.id;
+  const product = await getProductById(productId);
+
+  if (!product) {
+      return res.status(404).send("Producto no encontrado");
+  }
+
+  res.render("productDetail", { product });
+});
 
 
-// 🔹 Configurar Socket.IO en una función modular
-io.on("connection", (socket) => {
-  console.log("🟢 Cliente conectado");
 
-  // Enviar lista de productos al cliente
-  socket.emit("updateProducts", products);
+io.on("connection", async (socket) => {
+  console.log("Cliente conectado");
 
-  // Manejo de agregar productos
-  socket.on("addProduct", (product) => {
-    addProduct(product);
-    io.emit("updateProducts", products);
+  try {
+      const products = await getProducts(); // Obtener los productos antes de emitir
+      socket.emit("updateProducts", products);
+  } catch (error) {
+      console.error("Error al obtener productos:", error);
+  }
+
+  // Escuchar evento para agregar productos
+  socket.on("addProduct", async (product) => {
+      try {
+          await addProduct(product);
+/*           const products = await getProducts();
+          io.emit("updateProducts", products); */
+      } catch (error) {
+          console.error("Error al agregar producto:", error);
+      }
   });
 
-  // Manejo de eliminar productos
-  socket.on("deleteProduct", (productId) => {
-    deleteProduct(productId);
-    io.emit("updateProducts", products);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("🔴 Cliente desconectado");
+  // Escuchar evento para eliminar productos
+  socket.on("deleteProduct", async (productId) => {
+      try {
+          await deleteProduct(productId);
+          const products = await getProducts(); // Obtener productos actualizados
+          io.emit("updateProducts", products);
+      } catch (error) {
+          console.error("Error al eliminar producto:", error);
+      }
   });
 });
+
 
 // Rutas de la API
 app.use("/api/products", productRouter);

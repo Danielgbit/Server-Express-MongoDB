@@ -1,13 +1,15 @@
 const socket = io();
 
-// 🔹 Recibir actualización de productos
 socket.on("updateProducts", (products) => {
     const productList = document.getElementById("productList");
     productList.innerHTML = ""; // Limpiar la lista antes de actualizar
 
     products.forEach(product => {
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${product.name}</strong> - $${product.price} 
+        // Hacer que el título del producto sea un enlace a la vista de detalle
+        li.innerHTML = `<a href="/products/${product.id}"; color: inherit;">
+                            <strong>${product.title}</strong> - $${product.price}
+                        </a>
                         <button onclick="deleteProduct('${product.id}')">❌</button>`;
         productList.appendChild(li);
     });
@@ -17,11 +19,14 @@ socket.on("updateProducts", (products) => {
 document.getElementById("productForm").addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const name = document.getElementById("productName").value;
+    const title = document.getElementById("productTitle").value;
     const price = document.getElementById("productPrice").value;
+    const description = document.getElementById("productDescription").value;
 
-    if (name && price) {
-        const newProduct = { id: Date.now().toString(), name, price };
+
+    if (title && price && description) {
+
+        const newProduct = { title, price, description };
         socket.emit("addProduct", newProduct);
 
         document.getElementById("productForm").reset(); // Limpiar formulario
