@@ -1,6 +1,30 @@
 const express = require('express');
 const app = express();
+const http = require("http");
+const { Server } = require("socket.io");
+
+const server = http.createServer(app);
+const io = new Server(server);
 const port = 8080;
+
+// Middleware para servir archivos estáticos (opcional)
+app.use(express.static("public"));
+
+// Manejo de conexiones Socket.IO
+io.on("connection", (socket) => {
+  console.log("Cliente conectado");
+
+  socket.on("mensaje", (message) => {
+    console.log("Mensaje recibido: ", message);
+
+    // Enviar mensaje a todos los clientes conectados
+    io.emit("mensaje", `Mensaje del servidor: ${message}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Cliente desconectado");
+  });
+});
 
 const productRouter = require('./routes/products.routes');
 const cartRouter = require('./routes/carts.routes');
