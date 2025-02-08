@@ -1,19 +1,29 @@
-<!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalle del Producto</title>
-</head>
-<body>
-    <h1>Detalle del Producto</h1>
-    <div>
-        <h2>{{product.title}}</h2>
-        <p><strong>Precio:</strong> ${{product.price}}</p>
-        <p><strong>Descripción:</strong> {{product.description}}</p>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="body-productDetail">
+
+    <h1 class="card-title text-center mb-4 title-detailProduct">Detalle del Producto</h1>
+    <div class="productDetail">
+    <div class="card mt-5 card-productDetail">
+      <div class="card-body">
+        <div class="card-text">
+          <h2 class="card-title">{{product.title}}</h2>
+          <p class="card-text"><strong>Precio:</strong> ${{product.price}}</p>
+          <p class="card-text"><strong>Descripción:</strong>
+            {{product.description}}</p>
+        </div>
+      </div>
     </div>
-    
-    <a href="/editproduct/{{product.id}}">Editar producto</a> 
-    <a href="/realtimeproducts">Volver a la lista de productos</a>
-</body>
+
+    <a href="/editproduct/{{product.id}}" class="button-realTimeP">Editar producto</a>
+    <a href="/realtimeproducts" class="button-realTimeP">Volver a la lista de
+      productos</a>
+</div>
+
+  </body>
 </html>

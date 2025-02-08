@@ -15,7 +15,8 @@ socket.on("updateProducts", (products) => {
                         </a>
                         <button class="button-delete-p" onclick="deleteProduct('${product.id}')"><i class="fa-solid fa-circle-minus"></i></button>
                         <a href="/editproduct/${product.id}">
-                            <button class="button-update-p"><i class="fa-solid fa-pen"></i></button> <!-- Botón para editar -->
+                            <button class="button-update-p"><i class="fa-solid fa-pen"></i></button>
+                            <a href="/products/${product.id}" class="button-detail-p"><i class="fa-solid fa-circle-info"></i></a>
                         </a>`;
         productList.appendChild(li);
     });
