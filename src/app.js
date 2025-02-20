@@ -3,11 +3,29 @@ const path = require("path");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { engine } = require("express-handlebars");
+const mongoose = require('mongoose');
 
 const productRouter = require("./routes/products.routes");
 const cartRouter = require("./routes/carts.routes");
 
+const pass = '123';
+const nameDB = 'NodeJsDB';
+
+
+const connectMongoDB = async () => {
+    try {
+        await mongoose.connect(`mongodb+srv://danielbitmobb:${pass}@ecommerce-cluster.c4vok.mongodb.net/${nameDB}?retryWrites=true&w=majority&appName=Ecommerce-Cluster`);
+        console.log('connect mongoDB');
+    } catch (error) {
+        console.log(`failed connection MongoDB ${error.message}`);
+        
+    }
+};
+
+connectMongoDB();
+
 const { getProducts, deleteProduct, addProduct, getProductById, updateProduct } = require("./services/productService");
+const { log } = require("console");
 
 const app = express();
 const port = 8080;
