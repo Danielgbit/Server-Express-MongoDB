@@ -1,9 +1,14 @@
 const ProductManager = require('../data/products');
+const ProductModel = require('../models/product.model');
 const productManager = new ProductManager();
 
+
 const getProducts = async (req, res) => {
-    const data = productManager.getProducts();
-    return res.status(200).send(data);
+    const products = await ProductModel.find();
+    return res.status(200).send({ 
+        status: 'success', 
+        payload: products
+    });
 };
 
 const addProduct = async (req, res) => {
@@ -12,24 +17,37 @@ const addProduct = async (req, res) => {
             const { title, description, price } = req.body;
 
             if (!title || !description || !price) {
-                return res.status(400).json({ error: "Todos los campos son obligatorios" });
+                return res.send({ error: "Todos los campos son obligatorios" });
             }
 
-            productManager.addProduct(req.body);
+            const newProduct = {
+                title: title,
+                description: description,
+                price: price
+              };
+
+            const result = await ProductModel.insertOne(newProduct);
             
-            res.status(201).send('Product successfully created');
+            return res.send({ status: 'success', payload: result });
+
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            res.status(400).send({ error: error.message });
         }
 };
 
 const getProductById = async (req, res) => {
     try {
-        if (!req.params.id) {
+
+        const uid = req.params.id;
+
+        if (!uid) {
             return res.status(400).json('id not found');
         };
-        const data = productManager.getProductById(req.params.id);
-        return res.status(200).send(data);
+
+        const response = await ProductModel.findById({ _id: uid });
+
+        return res.status(200).send({ status: 'success', payload: response });
+
     } catch (error) {
         res.status(400).send('id not found');
     }
@@ -38,9 +56,12 @@ const getProductById = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        const productId = req.params.id;
-        productManager.deleteProduct(productId);
-        res.status(410).send('Product delete successfully')
+        const uid = req.params.id;
+
+        const response = await ProductModel.deleteOne({ _id: uid });
+
+        res.status(200).send({ status: 'success', payload: response });
+
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
@@ -50,11 +71,20 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const productId = req.params.id;
-        const updatedFields = req.body;
+        const uid = req.params.id;
+        const { title, description, price } = req.body;
+
+
+        const updateProduct = {
+            title: title,
+            description: description,
+            price: price
+          };
         
-        const updatedProduct = productManager.updateProduct(productId, updatedFields);
-        res.status(200).json(updatedProduct);
+        const response = await ProductModel.updateOne({ _id: uid }, updateProduct );
+        
+        res.status(200).send({ status:'success', payload: response });
+
     } catch (error) {
         res.status(404).json({ error: error.message });
     }
