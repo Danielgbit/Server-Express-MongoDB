@@ -1,6 +1,6 @@
 const ProductManager = require('../data/products');
 const ProductModel = require('../models/product.model');
-const productManager = new ProductManager();
+const { v4: uuidv4 } = require('uuid'); // Para generar UUIDs
 
 
 const getProducts = async (req, res) => {
@@ -12,27 +12,26 @@ const getProducts = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-        try {
+    try {
+        const { title, description, price } = req.body;
 
-            const { title, description, price } = req.body;
-
-            if (!title || !description || !price) {
-                return res.send({ error: "Todos los campos son obligatorios" });
-            }
-
-            const newProduct = {
-                title: title,
-                description: description,
-                price: price
-              };
-
-            const result = await ProductModel.insertOne(newProduct);
-            
-            return res.send({ status: 'success', payload: result });
-
-        } catch (error) {
-            res.status(400).send({ error: error.message });
+        if (!title || !description || !price) {
+            return res.status(400).send({ error: "Todos los campos son obligatorios" });
         }
+
+        const newProduct = {
+            title: title,
+            description: description,
+            price: price
+        };
+
+        const result = await ProductModel.insertOne(newProduct);
+
+        return res.status(201).send({ status: 'success', payload: result });
+
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
 };
 
 const getProductById = async (req, res) => {

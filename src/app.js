@@ -45,13 +45,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas de vistas
 app.get("/", async (req, res) => {
-  const products = await getProducts();
+  const response = await getProducts();
+  if (response.status !== 'success') {
+    return console.error('error conection');
+  }
+    const products = response.payload;
   res.render("index", { title: "Inicio", products });
 });
 
 
 app.get("/realtimeproducts", async (req, res) => {
-  const products = await getProducts();
+    
+    const response = await getProducts();
+    if (response.status !== 'success') {
+      return console.error('error conection');
+    }
+    const products = response.payload;
   res.render("realTimeProducts", { title: "Productos en Tiempo Real", products });
 });
 
@@ -60,11 +69,12 @@ app.get("/products/:id", async (req, res) => {
   const productId = req.params.id;
   const product = await getProductById(productId);
 
-  if (!product) {
+
+/*   if (!product) {
       return res.status(404).send("Producto no encontrado");
   }
 
-  res.render("productDetail", { product });
+  res.render("productDetail", { product }); */
 });
 
 
@@ -83,7 +93,11 @@ io.on("connection", async (socket) => {
   console.log("Cliente conectado");
 
   try {
-      const products = await getProducts(); // Obtener los productos antes de emitir
+    const response = await getProducts();
+    if (response.status !== 'success') {
+      return console.error('error conection');
+    }
+    const products = response.payload;
       socket.emit("updateProducts", products);
   } catch (error) {
       console.error("Error al obtener productos:", error);
