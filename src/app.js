@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const { engine } = require("express-handlebars");
 
 const productRouter = require("./routes/products.routes");
-const cartRouter = require("./routes/carts.routes");
+const cartsRoutes = require("./routes/carts.routes");
 
 const viewRouter = require("./routes/views.routes"); // Vistas
 
@@ -21,6 +21,8 @@ const httpServer = createServer(app);
 // Conectar WebSockets
 const io = new Server(httpServer);
 socketHandler(io);
+
+
 
 // Conectar a MongoDB
 connectMongoDB();
@@ -40,7 +42,8 @@ app.use("/", viewRouter);
 
 // Rutas de la API
 app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
+// Rutas
+app.use("/api/carts", cartsRoutes);
 
 // Iniciar el servidor HTTP
 httpServer.listen(port, () => {

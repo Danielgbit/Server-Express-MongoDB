@@ -4,15 +4,22 @@ const socketHandler = (io) => {
     io.on("connection", async (socket) => {
         console.log("Cliente conectado");
 
+        // Enviar la lista de productos al conectar un cliente
         try {
             const response = await getProducts();
-            if (response.status !== "success") {
-                return console.error("Error de conexión");
+            if (response.status === "success") {
+                socket.emit("updateProducts", response.payload);
+            } else {
+                console.error("Error de conexión al obtener productos");
             }
-            socket.emit("updateProducts", response.payload);
         } catch (error) {
             console.error("Error al obtener productos:", error);
         }
+
+        // Escuchar evento cuando el carrito se actualiza
+        socket.on("updateCart", (cart) => {
+            io.emit("cartUpdated", cart);
+        });
 
         // Escuchar evento para agregar productos
         socket.on("addProduct", async (product) => {

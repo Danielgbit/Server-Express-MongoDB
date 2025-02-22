@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
 
+
 // Página principal con productos
 router.get("/", async (req, res) => {
     const response = await getProducts();
@@ -47,5 +48,7 @@ router.get("/editproduct/:id", async (req, res) => {
 
     res.render("editProduct", { product: response.payload });
 });
+
+
 
 module.exports = router;
