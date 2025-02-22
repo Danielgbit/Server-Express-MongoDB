@@ -3,34 +3,27 @@ const path = require("path");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { engine } = require("express-handlebars");
-const mongoose = require('mongoose');
 
 const productRouter = require("./routes/products.routes");
 const cartRouter = require("./routes/carts.routes");
 
-const pass = '123';
-const nameDB = 'NodeJsDB';
+const viewRouter = require("./routes/views.routes"); // Vistas
 
+const connectMongoDB = require("./config/db");
+const socketHandler = require("./services/socketService");
 
-const connectMongoDB = async () => {
-    try {
-        await mongoose.connect(`mongodb+srv://danielbitmobb:${pass}@ecommerce-cluster.c4vok.mongodb.net/${nameDB}?retryWrites=true&w=majority&appName=Ecommerce-Cluster`);
-        console.log('connect mongoDB');
-    } catch (error) {
-        console.log(`failed connection MongoDB ${error.message}`);
-        
-    }
-};
-
-connectMongoDB();
-
-const { getProducts, deleteProduct, addProduct, getProductById, updateProduct } = require("./services/productService");
 
 const app = express();
 const port = 8080;
 
 const httpServer = createServer(app);
+
+// Conectar WebSockets
 const io = new Server(httpServer);
+socketHandler(io);
+
+// Conectar a MongoDB
+connectMongoDB();
 
 app.engine("handlebars", engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
@@ -43,98 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Rutas de vistas
-app.get("/", async (req, res) => {
-  const response = await getProducts();
-  if (response.status !== 'success') {
-    return console.error('error conection');
-  }
-    const products = response.payload;
-  res.render("index", { title: "Inicio", products });
-});
-
-
-app.get("/realtimeproducts", async (req, res) => {
-    
-    const response = await getProducts();
-    if (response.status !== 'success') {
-      return console.error('error conection');
-    }
-    const products = response.payload;
-  res.render("realTimeProducts", { title: "Productos en Tiempo Real", products });
-});
-
-// Ruta para mostrar el detalle de un producto
-app.get("/products/:id", async (req, res) => {
-  const productId = req.params.id;
-  const product = await getProductById(productId);
-
-
-/*   if (!product) {
-      return res.status(404).send("Producto no encontrado");
-  }
-
-  res.render("productDetail", { product }); */
-});
-
-
-// Ruta para mostrar el formulario de edición
-app.get("/editproduct/:id", async (req, res) => {
-  const productId = req.params.id;
-  const product = await getProductById(productId);
-  if (product) {
-      res.render("editProduct", { product });
-  } else {
-      res.status(404).send("Producto no encontrado");
-  }
-});
-
-io.on("connection", async (socket) => {
-  console.log("Cliente conectado");
-
-  try {
-    const response = await getProducts();
-    if (response.status !== 'success') {
-      return console.error('error conection');
-    }
-    const products = response.payload;
-      socket.emit("updateProducts", products);
-  } catch (error) {
-      console.error("Error al obtener productos:", error);
-  }
-
-  // Escuchar evento para agregar productos
-  socket.on("addProduct", async (product) => {
-      try {
-          await addProduct(product);
-          const products = await getProducts();
-          io.emit("updateProducts", products);
-      } catch (error) {
-          console.error("Error al agregar producto:", error);
-      }
-  });
-
-  // Escuchar evento de editar producto
-  socket.on("editProduct", async (updatedProduct) => {
-      try {
-          await updateProduct(updatedProduct.id, updatedProduct);
-          const products = await getProducts();
-          io.emit("updateProducts", products); // Enviar los productos actualizados a todos los clientes
-      } catch (error) {
-          console.error("Error al actualizar producto:", error);
-      }
-  });
-
-  // Escuchar evento para eliminar productos
-  socket.on("deleteProduct", async (productId) => {
-      try {
-          await deleteProduct(productId);
-          const products = await getProducts(); // Obtener productos actualizados
-          io.emit("updateProducts", products);
-      } catch (error) {
-          console.error("Error al eliminar producto:", error);
-      }
-  });
-});
+app.use("/", viewRouter);
 
 // Rutas de la API
 app.use("/api/products", productRouter);

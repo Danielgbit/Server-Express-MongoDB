@@ -1,6 +1,4 @@
-const ProductManager = require('../data/products');
 const ProductModel = require('../models/product.model');
-const { v4: uuidv4 } = require('uuid'); // Para generar UUIDs
 
 
 const getProducts = async (req, res) => {

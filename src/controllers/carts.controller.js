@@ -1,7 +1,4 @@
-const CartManager = require("../data/carts");
 const CartModel = require("../models/cart.model");
-
-const cartManager = new CartManager();
 
 const createCart = async (req, res) => {
   try {
