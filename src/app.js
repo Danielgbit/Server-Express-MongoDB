@@ -25,7 +25,6 @@ const connectMongoDB = async () => {
 connectMongoDB();
 
 const { getProducts, deleteProduct, addProduct, getProductById, updateProduct } = require("./services/productService");
-const { log } = require("console");
 
 const app = express();
 const port = 8080;
