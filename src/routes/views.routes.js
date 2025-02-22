@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
+const getCartById = require("../services/cartService");
 
 
 // Página principal con productos
@@ -47,6 +48,27 @@ router.get("/editproduct/:id", async (req, res) => {
     }
 
     res.render("editProduct", { product: response.payload });
+});
+
+router.get("/cart/:id", async (req, res) => {
+    const id = req.params.id;
+    const response = await getCartById(id);
+    if (response.status !== "success") {
+        return console.error("Error de conexión");
+    }
+
+     const productIds = response.payload.products;
+     const products = await Promise.all(
+         productIds.map(async (productId) => {
+             const productResponse = await getProductById(productId);
+             return productResponse.payload; 
+         })
+     );
+
+     console.log(products);
+     
+    
+    /* res.render("cart", { products: products }); */
 });
 
 

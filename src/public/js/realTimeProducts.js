@@ -1,6 +1,5 @@
 const socket = io();
 
-// 🔹 Recibir actualización de productos
 socket.on("updateProducts", (products) => {
     const productList = document.getElementById("productList");
     productList.innerHTML = ""; // Limpiar la lista antes de actualizar

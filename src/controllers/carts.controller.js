@@ -14,10 +14,24 @@ const createCart = async (req, res) => {
   }
 };
 
+const getCarts = async (req, res) => {
+  try {
+    const carts = await CartModel.find();
+    if (!carts) {
+      return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
+    }
+    res.status(200).send({ status: 'success', payload: carts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const getCart = async (req, res) => {
   try {
-    const uid = req.params.id;
-    const cart = await CartModel.findById(uid);
+    const id = req.params.id;
+    const cart = await CartModel.findById({
+      _id: id
+    });
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
@@ -35,10 +49,8 @@ const addProductToCart = async (req, res) => {
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
-
-    const productObjectId = mongoose.Types.ObjectId(productId);
-    cart.products.push(productObjectId);
-
+    
+    cart.products.push(productId);
     await cart.save();
     res.status(201).json({ status: "success", message: "Producto agregado exitosamente", payload: cart });
   } catch (error) {
@@ -72,4 +84,5 @@ module.exports = {
   getCart,
   addProductToCart,
   removeProductFromCart,
+  getCarts
 };
