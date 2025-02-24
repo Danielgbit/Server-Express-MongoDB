@@ -49,14 +49,26 @@ const addProductToCart = async (req, res) => {
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
-    
-    cart.products.push(productId);
+
+    // Buscar si el producto ya está en el carrito
+    const existingProduct = cart.products.find(product => product._id.toString() === productId);
+
+    if (existingProduct) {
+      // Si el producto ya existe, aumentar la cantidad
+      existingProduct.quantity += 1;
+    } else {
+      // Si el producto no existe, agregarlo con cantidad = 1
+      cart.products.push({ _id: productId, quantity: 1 });
+    }
+
     await cart.save();
     res.status(201).json({ status: "success", message: "Producto agregado exitosamente", payload: cart });
+
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
 
 const removeProductFromCart = async (req, res) => {
   try {

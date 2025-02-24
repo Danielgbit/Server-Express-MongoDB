@@ -4,7 +4,7 @@ const cartSchema = new mongoose.Schema({
     products: {
         type: [
             {
-                productId: {
+                _id: { // Antes era productId, ahora usamos _id para mantener consistencia
                     type: mongoose.Schema.Types.ObjectId,
                     required: true,
                 },

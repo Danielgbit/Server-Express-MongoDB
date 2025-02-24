@@ -51,25 +51,47 @@ router.get("/editproduct/:id", async (req, res) => {
 });
 
 router.get("/cart/:id", async (req, res) => {
-    const id = req.params.id;
-    const response = await getCartById(id);
-    if (response.status !== "success") {
-        return console.error("Error de conexión");
+    try {
+        const { id } = req.params;
+        const response = await getCartById('67bce9956195aea12778e074');
+
+        // 📌 Verificar si el carrito se obtuvo correctamente
+        if (!response || response.status !== "success" || !response.payload) {
+            console.error("❌ Error de conexión al obtener el carrito");
+            return res.status(500).send("Error al obtener el carrito");
+        }
+
+        // 🛒 Obtener la lista de productos del carrito
+        const cartProducts = response.payload.products;
+
+        // 🔄 Obtener los detalles de cada producto en paralelo
+        const products = await Promise.all(cartProducts.map(async (item) => {
+            const productResponse = await getProductById(item._id);
+            if (productResponse.status === "success") {
+                return { 
+                    ...productResponse.payload, 
+                    quantity: item.quantity // Agregamos la cantidad del carrito
+                };
+            }
+            return null; // Si falla la consulta, ignoramos el producto
+        }));
+
+        // 📌 Filtrar productos nulos (por si alguna consulta falla)
+        const validProducts = products.filter(product => product !== null);
+
+        console.log("✅ Productos listos para renderizar:", validProducts);
+
+        // 🖼️ Renderizar la vista "cart" con los productos
+        res.render("cart", { products: validProducts });
+
+    } catch (error) {
+        console.error("❌ Error en la consulta del carrito:", error.message);
+        res.status(500).send("Error interno del servidor");
     }
-
-     const productIds = response.payload.products;
-     const products = await Promise.all(
-         productIds.map(async (productId) => {
-             const productResponse = await getProductById(productId);
-             return productResponse.payload; 
-         })
-     );
-
-     console.log(products);
-     
-    
-    /* res.render("cart", { products: products }); */
 });
+
+
+
 
 
 
