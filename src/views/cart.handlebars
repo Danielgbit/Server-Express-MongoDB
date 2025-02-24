@@ -1,22 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras</title>
-</head>
-<body>
-    <h1>🛒 Carrito de Compras</h1>
+<h2>🛒 Tu Carrito</h2>
 
-    <div>
+{{#if products.length}}
+    <ul>
         {{#each products}}
-            <div>
-                <h2>{{title}}</h2>
-                <p><strong>Descripción:</strong> {{description}}</p>
-                <p><strong>Precio:</strong> ${{price}}</p>
-                <p><strong>Cantidad:</strong> {{quantity}}</p>
-            </div>
+            <li>
+                <h3>{{this.productId.title}}</h3>
+                <p>Cantidad: {{this.quantity}}</p>
+                <p>Precio: ${{this.productId.price}}</p>
+            </li>
         {{/each}}
-    </div>
-</body>
-</html>
+    </ul>
+{{else}}
+    <p>Tu carrito está vacío.</p>
+{{/if}}

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
-const getCartById = require("../services/cartService");
+const { getCartById } = require("../services/cartService");
 
 
 // Página principal con productos
@@ -89,6 +89,34 @@ router.get("/cart/:id", async (req, res) => {
         res.status(500).send("Error interno del servidor");
     }
 });
+
+router.post("/cart/:cartId/add/:productId", async (req, res) => {
+    try {
+        const { cartId, productId } = req.params;
+
+        const cart = await CartModel.findById(cartId);
+        if (!cart) {
+            return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
+        }
+
+        // Buscar si el producto ya existe en el carrito
+        const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+
+        if (productIndex > -1) {
+            // Si existe, aumentar la cantidad
+            cart.products[productIndex].quantity += 1;
+        } else {
+            // Si no existe, agregarlo con cantidad 1
+            cart.products.push({ productId, quantity: 1 });
+        }
+
+        await cart.save();
+        res.json({ status: "success", message: "Producto agregado", payload: cart });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
+    }
+});
+
 
 
 
