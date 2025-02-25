@@ -10,30 +10,63 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Lista de Productos</h1>
-
-        {{#if products.length}}
-            <div class="row">
-                {{#each products}}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">{{title}}</h5>
-                                <p class="card-text">{{description}}</p>
-                                <p class="card-text"><strong>Precio:</strong> ${{price}}</p>
-                                <form action="/addProductInCart/{{_id}}" method="POST">
-                                    <button type="submit" class="btn btn-success w-100">
-                                        Agregar al carrito
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+{{#if products.length}}
+    <div class="row">
+        {{#each products}}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">{{title}}</h5>
+                        <p class="card-text">{{description}}</p>
+                        <p class="card-text"><strong>Precio:</strong> ${{price}}</p>
+                        <form action="/addProductInCart/{{_id}}" method="POST">
+                            <button type="submit" class="btn btn-success w-100">
+                                Agregar al carrito
+                            </button>
+                        </form>
                     </div>
-                {{/each}}
+                </div>
             </div>
-        {{else}}
-            <p class="text-center">No hay productos disponibles.</p>
-        {{/if}}
+        {{/each}}
+    </div>
 
+    <!-- Controles de paginación -->
+    <nav aria-label="Paginación de productos">
+        <ul class="pagination justify-content-center">
+            {{#if (gt currentPage 1)}}
+                <li class="page-item">
+                    <a class="page-link" href="/?page={{subtract currentPage 1}}&limit={{limit}}" aria-label="Anterior">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {{else}}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {{/if}}
+
+            {{#each (range 1 totalPages)}}
+                <li class="page-item {{#if (eq this ../currentPage)}}active{{/if}}">
+                    <a class="page-link" href="/?page={{this}}&limit={{limit}}">{{this}}</a>
+                </li>
+            {{/each}}
+
+            {{#if (lt currentPage totalPages)}}
+                <li class="page-item">
+                    <a class="page-link" href="/?page={{add currentPage 1}}&limit={{limit}}" aria-label="Siguiente">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {{else}}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {{/if}}
+        </ul>
+    </nav>
+{{else}}
+    <p class="text-center">No hay productos disponibles.</p>
+{{/if}}
         <div class="text-center mt-4">
             <a href="/realtimeproducts" class="btn btn-primary">Ver productos en tiempo real</a>
         </div>

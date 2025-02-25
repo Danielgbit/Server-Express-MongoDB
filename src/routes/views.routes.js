@@ -10,14 +10,21 @@ const {
   clearCart
 } = require("../services/cartService");
 
-// Página principal con productos
 router.get("/", async (req, res) => {
-  const response = await getProducts();
+  const response = await getProducts(req, res); // Pasa req y res al controlador
   if (response.status !== "success") {
-    return console.error("Error de conexión");
+      return console.error("Error de conexión");
   }
-  res.render("index", { title: "Inicio", products: response.payload });
+  res.render("index", {
+      title: "Inicio",
+      products: response.payload,
+      totalPages: response.totalPages,
+      currentPage: response.currentPage,
+      totalProducts: response.totalProducts,
+      limit: response.limit // Pasa el límite a la vista
+  });
 });
+
 
 // Vista de productos en tiempo real
 router.get("/realtimeproducts", async (req, res) => {
@@ -69,7 +76,9 @@ router.get("/cart/:id", async (req, res) => {
       console.error("Error de conexión al obtener el carrito");
       return res.status(500).send("Error al obtener el carrito");
     }
-    const cartProducts = response.payload.products;
+
+    const cartProducts = response.payload.cart.products;
+    const total = response.payload.total; // Obtener el total
 
     // Obtener los detalles de cada producto en paralelo
     const products = await Promise.all(
@@ -86,7 +95,12 @@ router.get("/cart/:id", async (req, res) => {
     );
 
     const validProducts = products.filter((product) => product !== null);
-    res.render("cart", { products: validProducts });
+
+    // Renderizar la vista con los productos y el total
+    res.render("cart", {
+      products: validProducts,
+      total: total, // Pasar el total a la vista
+    });
   } catch (error) {
     res.status(500).send("Error interno del servidor");
   }
@@ -94,15 +108,25 @@ router.get("/cart/:id", async (req, res) => {
 
 router.get("/cart", async (req, res) => {
   try {
-    if (!req.session.cardId) {
+    // Verificar si ya existe un carrito en la sesión
+    if (!req.session.cartId) {
+      // Si no existe, crear un nuevo carrito
       const createCart = await postCreateCart();
+
+      // Verificar si el carrito se creó correctamente
+      if (!createCart || !createCart.payload || !createCart.payload._id) {
+        throw new Error("No se pudo crear el carrito");
+      }
+
+      // Almacenar el ID del carrito en la sesión
       req.session.cartId = createCart.payload._id;
     }
+
+    // Redirigir al carrito existente o recién creado
     res.redirect(`/cart/${req.session.cartId}`);
   } catch (error) {
-    res
-      .status(500)
-      .json({ status: "error", message: "No se pudo agregar el producto" });
+    console.error("Error en /cart:", error.message);
+    res.status(500).json({ status: "error", message: "No se pudo acceder al carrito" });
   }
 });
 

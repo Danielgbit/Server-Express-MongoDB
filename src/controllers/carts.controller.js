@@ -1,4 +1,5 @@
 const CartModel = require("../models/cart.model");
+const { getProductById } = require('../services/productService')
 
 const createCart = async (req, res) => {
   try {
@@ -31,10 +32,31 @@ const getCart = async (req, res) => {
     const cart = await CartModel.findById({
       _id: id
     });
+
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
-    res.status(200).send({ status: 'success', payload: cart });
+
+    let total = 0;
+
+    for (const item of cart.products) {
+      const product = await getProductById(item._id);
+
+      if (product && product.payload && product.payload.price) {
+        total += product.payload.price * item.quantity;
+      } else {
+        console.warn(`Producto con ID ${item._id} no encontrado o sin precio.`);
+      }
+    }
+
+    res.status(200).send({
+      status: 'success',
+      payload: {
+        cart: cart,
+        total: total
+      }
+    });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -128,15 +150,12 @@ const updateProductQuantity = async (req, res) => {
             return res.status(400).json({ status: "error", message: "Acción no válida" });
         }
 
-        // Validar que la cantidad no sea menor que 1
         if (newQuantity < 1) {
             return res.status(400).json({ status: "error", message: "La cantidad no puede ser menor que 1" });
         }
 
-        // Actualizar la cantidad del producto
         cart.products[productIndex].quantity = newQuantity;
 
-        // Guardar el carrito actualizado
         await cart.save();
 
         res.status(200).json({ status: "success", payload: cart });
