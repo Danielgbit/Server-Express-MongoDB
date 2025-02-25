@@ -1,5 +1,4 @@
 const CartModel = require("../models/cart.model");
-const mongoose = require("mongoose");
 
 const createCart = async (req, res) => {
   try {
@@ -73,16 +72,25 @@ const removeProductFromCart = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
 
-    const productObjectId = productId;
-    const updatedCart = await CartModel.findByIdAndUpdate(
-      cartId,
-      { $pull: { products: productObjectId } },
-      { new: true }
-    );
-
-    if (!updatedCart) {
+    // Buscar el carrito por su ID
+    const cart = await CartModel.findById(cartId);
+    if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
     }
+
+    // Filtrar los productos para eliminar el producto especificado
+    const initialProductCount = cart.products.length; // Cantidad inicial de productos
+    cart.products = cart.products.filter(
+      (product) => product._id.toString() !== productId
+    );
+
+    // Verificar si el producto fue eliminado
+    if (cart.products.length === initialProductCount) {
+      return res.status(404).json({ status: "error", message: "Producto no encontrado en el carrito" });
+    }
+
+    // Guardar el carrito actualizado
+    const updatedCart = await cart.save();
 
     res.status(200).json({ status: "success", message: "Producto eliminado del carrito", payload: updatedCart });
   } catch (error) {
@@ -94,9 +102,6 @@ const removeProductFromCart = async (req, res) => {
 const updateProductQuantity = async (req, res) => {
     const { cartId, productId } = req.params;
     const { action } = req.body; // action puede ser "increment" o "decrement"
-
-    console.log('Controller:','id:',productId, 'action:',action, 'cartId:', cartId);
-
     try {
         // Buscar el carrito por ID
         const cart = await CartModel.findById(cartId);
@@ -141,11 +146,42 @@ const updateProductQuantity = async (req, res) => {
     }
 };
 
+
+const removeCart = async (req, res) => {
+  try {
+    // Verifica si el carrito está en la sesión
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ status: "error", message: "Carrito no encontrado en la sesión" });
+    }
+
+    const cartId = id;
+
+    // Buscar el carrito en la base de datos
+    const cart = await CartModel.findById(cartId);
+    if (!cart) {
+      return res.status(404).json({ status: "error", message: "Carrito no encontrado en la base de datos" });
+    }
+
+    // Vaciar el carrito
+    cart.products = [];
+    await cart.save();
+
+    res.send({ status: "success", payload: cart });
+  } catch (error) {
+    console.error("Error al vaciar el carrito:", error);
+    res.status(500).json({ status: "error", message: "No se pudo vaciar el carrito" });
+  }
+};
+
+
 module.exports = {
+  removeCart,
   createCart,
   getCart,
   addProductToCart,
   removeProductFromCart,
   getCarts,
-  updateProductQuantity
+  updateProductQuantity,
 };

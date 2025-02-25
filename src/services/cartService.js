@@ -56,9 +56,9 @@ const updateProductInCartQuantity = async ({cartId, productId, action}) => {
     }
 };
 
-const deleteProductInCart = async ({cartId, productId}) => {
+const removeProductInCart = async ({cartId, productId}) => {
     try {
-        const response = await axios.delete(`${API_URL}/${cartId}/product/${productId}`,
+        const response = await axios.delete(`${API_URL}/delete/${cartId}/product/${productId}`,
             {}, // Body vacío (si no necesitas enviar datos)
             { withCredentials: true } // Opciones de configuración
         );
@@ -69,4 +69,24 @@ const deleteProductInCart = async ({cartId, productId}) => {
     }
 };
 
-module.exports = { getCartById, postCreateCart, postProductInCart, updateProductInCartQuantity, deleteProductInCart };
+const clearCart = async (params) => {
+    try {
+        const { id } = params;
+        const response = await axios.delete(`${API_URL}/clearCart/${id}`,
+            {}, // Body vacío (si no necesitas enviar datos)
+            { withCredentials: true } // Opciones de configuración
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error al actualizar el producto en el carrito:`, error.message);
+        return null;
+    }
+};
+
+module.exports = { getCartById, 
+    postCreateCart, 
+    postProductInCart, 
+    updateProductInCartQuantity, 
+    removeProductInCart, 
+    clearCart 
+};
