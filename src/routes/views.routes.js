@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
-const { getCartById, postCreateCart, postProductInCart } = require("../services/cartService");
+const { getCartById, postCreateCart, postProductInCart, updateProductInCartQuantity, deleteProductInCart } = require("../services/cartService");
 
 
 // Página principal con productos
@@ -73,14 +73,13 @@ router.get("/cart/:id", async (req, res) => {
                     quantity: item.quantity // Agregamos la cantidad del carrito
                 };
             }
-            return null; // Si falla la consulta, ignoramos el producto
+            return null;
         }));
 
         const validProducts = products.filter(product => product !== null);
         res.render("cart", { products: validProducts });
 
     } catch (error) {
-        console.error("❌ Error en la consulta del carrito:", error.message);
         res.status(500).send("Error interno del servidor");
     }
 });
@@ -102,13 +101,34 @@ router.get("/cart", async (req, res) => {
 router.post("/addProductInCart/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        if (!req.session.cardId) {
-            const createCart = await postCreateCart();
-            req.session.cartId = createCart.payload._id;
-        }
-        await postProductInCart({ cartId: req.session.cartId, productId: id });
+        await postProductInCart({ cartId: req.session.cartId, productId: id }); 
+        
         res.redirect(`/cart/${req.session.cartId}`);
         
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
+    }
+});
+
+
+router.post("/updateProductInCart/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action } = req.body;
+
+        updateProductInCartQuantity({ cartId: req.session.cartId, productId: id, action: action });
+        res.redirect(`/cart/${req.session.cartId}`);
+        
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
+    }
+});
+
+router.post("/deleteProductInCart/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteProductInCart = await deleteProductInCart({ cartId: req.session.cartId, productId: id })
+        res.redirect(`/cart/${req.session.cartId}`);
     } catch (error) {
         res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
     }

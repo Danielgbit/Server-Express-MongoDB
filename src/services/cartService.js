@@ -28,7 +28,7 @@ const postCreateCart = async () => {
     }
 };
 
-// Crear un nuevo carrito
+// Crear un nuevo product en el carrito
 const postProductInCart = async ({cartId, productId}) => {
     try {
         const response = await axios.post(`${API_URL}/${cartId}/product/${productId}`,
@@ -42,4 +42,31 @@ const postProductInCart = async ({cartId, productId}) => {
     }
 };
 
-module.exports = { getCartById, postCreateCart, postProductInCart };
+// Actualizar cantidad productInCart
+const updateProductInCartQuantity = async ({cartId, productId, action}) => {
+    try {
+        const response = await axios.put(`${API_URL}/${cartId}/product/${productId}`,
+            { action }, // Body vacío (si no necesitas enviar datos)
+            { withCredentials: true } // Opciones de configuración
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error al actualizar el producto en el carrito:`, error.message);
+        return null;
+    }
+};
+
+const deleteProductInCart = async ({cartId, productId}) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${cartId}/product/${productId}`,
+            {}, // Body vacío (si no necesitas enviar datos)
+            { withCredentials: true } // Opciones de configuración
+        );
+        return response.data;
+    } catch (error) {
+        console.error(`Error al actualizar el producto en el carrito:`, error.message);
+        return null;
+    }
+};
+
+module.exports = { getCartById, postCreateCart, postProductInCart, updateProductInCartQuantity, deleteProductInCart };

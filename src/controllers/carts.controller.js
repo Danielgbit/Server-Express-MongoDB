@@ -44,9 +44,6 @@ const getCart = async (req, res) => {
 const addProductToCart = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
-    console.log('d', cartId, productId);
-    
-
     const cart = await CartModel.findById(cartId);
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
@@ -76,7 +73,7 @@ const removeProductFromCart = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
 
-    const productObjectId = mongoose.Types.ObjectId(productId);
+    const productObjectId = productId;
     const updatedCart = await CartModel.findByIdAndUpdate(
       cartId,
       { $pull: { products: productObjectId } },
@@ -93,10 +90,62 @@ const removeProductFromCart = async (req, res) => {
   }
 };
 
+
+const updateProductQuantity = async (req, res) => {
+    const { cartId, productId } = req.params;
+    const { action } = req.body; // action puede ser "increment" o "decrement"
+
+    console.log('Controller:','id:',productId, 'action:',action, 'cartId:', cartId);
+
+    try {
+        // Buscar el carrito por ID
+        const cart = await CartModel.findById(cartId);
+        if (!cart) {
+            return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
+        }
+
+        // Buscar el producto en el carrito
+        const productIndex = cart.products.findIndex(
+            (product) => product._id.toString() === productId
+        );
+
+        if (productIndex === -1) {
+            return res.status(404).json({ status: "error", message: "Producto no encontrado en el carrito" });
+        }
+
+        // Determinar el cambio basado en la acción
+        let newQuantity;
+        if (action === "increment") {
+            newQuantity = cart.products[productIndex].quantity + 1;
+        } else if (action === "decrement") {
+            newQuantity = cart.products[productIndex].quantity - 1;
+        } else {
+            return res.status(400).json({ status: "error", message: "Acción no válida" });
+        }
+
+        // Validar que la cantidad no sea menor que 1
+        if (newQuantity < 1) {
+            return res.status(400).json({ status: "error", message: "La cantidad no puede ser menor que 1" });
+        }
+
+        // Actualizar la cantidad del producto
+        cart.products[productIndex].quantity = newQuantity;
+
+        // Guardar el carrito actualizado
+        await cart.save();
+
+        res.status(200).json({ status: "success", payload: cart });
+    } catch (error) {
+        console.error("Error al actualizar la cantidad del producto:", error);
+        res.status(500).json({ status: "error", message: "Error interno del servidor" });
+    }
+};
+
 module.exports = {
   createCart,
   getCart,
   addProductToCart,
   removeProductFromCart,
-  getCarts
+  getCarts,
+  updateProductQuantity
 };
