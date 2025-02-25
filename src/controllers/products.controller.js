@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const ProductModel = require('../models/product.model');
 
 
@@ -9,6 +10,7 @@ const getProducts = async (req, res) => {
     });
 };
 
+
 const addProduct = async (req, res) => {
     try {
         const { title, description, price } = req.body;
@@ -18,12 +20,13 @@ const addProduct = async (req, res) => {
         }
 
         const newProduct = {
-            title: title,
-            description: description,
-            price: price
+            _id: new mongoose.Types.ObjectId(), // Generar un ObjectId único
+            title,
+            description,
+            price
         };
 
-        const result = await ProductModel.insertOne(newProduct);
+        const result = await ProductModel.create(newProduct);
 
         return res.status(201).send({ status: 'success', payload: result });
 
@@ -31,6 +34,7 @@ const addProduct = async (req, res) => {
         res.status(400).send({ error: error.message });
     }
 };
+
 
 const getProductById = async (req, res) => {
     try {
