@@ -44,6 +44,8 @@ const getCart = async (req, res) => {
 const addProductToCart = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
+    console.log('d', cartId, productId);
+    
 
     const cart = await CartModel.findById(cartId);
     if (!cart) {

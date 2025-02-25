@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
-const { getCartById, postCreateCart } = require("../services/cartService");
+const { getCartById, postCreateCart, postProductInCart } = require("../services/cartService");
 
 
 // Página principal con productos
 router.get("/", async (req, res) => {
+    console.log(req.session);
+    
     const response = await getProducts();
     if (response.status !== "success") {
         return console.error("Error de conexión");
@@ -55,16 +57,14 @@ router.get("/cart/:id", async (req, res) => {
         const { id } = req.params;
         const response = await getCartById(id);
 
-        // 📌 Verificar si el carrito se obtuvo correctamente
+        // Verificar si el carrito se obtuvo correctamente
         if (!response || response.status !== "success" || !response.payload) {
-            console.error("❌ Error de conexión al obtener el carrito");
+            console.error("Error de conexión al obtener el carrito");
             return res.status(500).send("Error al obtener el carrito");
         }
-
-        // 🛒 Obtener la lista de productos del carrito
         const cartProducts = response.payload.products;
 
-        // 🔄 Obtener los detalles de cada producto en paralelo
+        // Obtener los detalles de cada producto en paralelo
         const products = await Promise.all(cartProducts.map(async (item) => {
             const productResponse = await getProductById(item._id);
             if (productResponse.status === "success") {
@@ -76,12 +76,7 @@ router.get("/cart/:id", async (req, res) => {
             return null; // Si falla la consulta, ignoramos el producto
         }));
 
-        // 📌 Filtrar productos nulos (por si alguna consulta falla)
         const validProducts = products.filter(product => product !== null);
-
-        console.log("✅ Productos listos para renderizar:", validProducts);
-
-        // 🖼️ Renderizar la vista "cart" con los productos
         res.render("cart", { products: validProducts });
 
     } catch (error) {
@@ -91,16 +86,11 @@ router.get("/cart/:id", async (req, res) => {
 });
 
 router.get("/cart", async (req, res) => {
-    console.log("Sesión actual antes de asignar carrito:", req.session);
-
     try {
-        if (!req.session.cartId) {
+        if (!req.session.cardId) {
             const createCart = await postCreateCart();
             req.session.cartId = createCart.payload._id;
-            console.log("Nuevo carrito creado en sesión:", req.session.cartId);
         }
-
-        console.log("Sesión después de asignar carrito:", req.session);
         res.redirect(`/cart/${req.session.cartId}`);
 
     } catch (error) {
@@ -109,7 +99,20 @@ router.get("/cart", async (req, res) => {
 });
 
 
-
+router.post("/addProductInCart/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!req.session.cardId) {
+            const createCart = await postCreateCart();
+            req.session.cartId = createCart.payload._id;
+        }
+        await postProductInCart({ cartId: req.session.cartId, productId: id });
+        res.redirect(`/cart/${req.session.cartId}`);
+        
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
+    }
+});
 
 
 
