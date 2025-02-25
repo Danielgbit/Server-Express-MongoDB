@@ -53,6 +53,12 @@ const socketHandler = (io) => {
                 console.error("Error al eliminar producto:", error);
             }
         });
+
+
+        socket.on("addToCart", (product) => {
+            console.log("Producto agregado al carrito:", product);
+            io.emit("updateCart", product); // Emitir evento para actualizar el carrito
+        });
     });
 };
 

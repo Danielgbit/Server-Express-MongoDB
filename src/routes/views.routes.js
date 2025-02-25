@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { getProducts, getProductById } = require("../services/productService");
-const { getCartById } = require("../services/cartService");
+const { getCartById, postCreateCart } = require("../services/cartService");
 
 
 // Página principal con productos
@@ -53,7 +53,7 @@ router.get("/editproduct/:id", async (req, res) => {
 router.get("/cart/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const response = await getCartById('67bce9956195aea12778e074');
+        const response = await getCartById(id);
 
         // 📌 Verificar si el carrito se obtuvo correctamente
         if (!response || response.status !== "success" || !response.payload) {
@@ -90,28 +90,19 @@ router.get("/cart/:id", async (req, res) => {
     }
 });
 
-router.post("/cart/:cartId/add/:productId", async (req, res) => {
+router.get("/cart", async (req, res) => {
+    console.log("Sesión actual antes de asignar carrito:", req.session);
+
     try {
-        const { cartId, productId } = req.params;
-
-        const cart = await CartModel.findById(cartId);
-        if (!cart) {
-            return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
+        if (!req.session.cartId) {
+            const createCart = await postCreateCart();
+            req.session.cartId = createCart.payload._id;
+            console.log("Nuevo carrito creado en sesión:", req.session.cartId);
         }
 
-        // Buscar si el producto ya existe en el carrito
-        const productIndex = cart.products.findIndex(p => p.productId.toString() === productId);
+        console.log("Sesión después de asignar carrito:", req.session);
+        res.redirect(`/cart/${req.session.cartId}`);
 
-        if (productIndex > -1) {
-            // Si existe, aumentar la cantidad
-            cart.products[productIndex].quantity += 1;
-        } else {
-            // Si no existe, agregarlo con cantidad 1
-            cart.products.push({ productId, quantity: 1 });
-        }
-
-        await cart.save();
-        res.json({ status: "success", message: "Producto agregado", payload: cart });
     } catch (error) {
         res.status(500).json({ status: "error", message: "No se pudo agregar el producto" });
     }
