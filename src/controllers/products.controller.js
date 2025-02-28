@@ -3,25 +3,30 @@ const ProductModel = require('../models/product.model');
 
 
 const getProducts = async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Página actual (por defecto 1)
-    const limit = parseInt(req.query.limit) || 20; // Límite de productos por página (por defecto 10)
-    const skip = (page - 1) * limit; // Cálculo de cuántos documentos saltar
 
-    try {
-        const products = await ProductModel.find()
-            .skip(skip)
-            .limit(limit);
+    const { page = 1, limit = 10 } = req.query; 
 
-        const totalProducts = await ProductModel.countDocuments(); // Total de productos en la base de datos
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10)
+    };
 
+    try { 
+        const result = await ProductModel.paginate({}, options);  
+        
         return res.status(200).send({
             status: 'success',
-            payload: products,
-            totalPages: Math.ceil(totalProducts / limit), // Total de páginas
-            currentPage: page,
-            totalProducts: totalProducts,
-            limit: limit // Pasa el límite a la vista
+            payload: result.docs,
+            totalDocs: result.totalDocs,
+            limit: result.limit,
+            page: result.page,
+            pagingCounter: result.pagingCounter,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage
         });
+
     } catch (error) {
         return res.status(500).send({
             status: 'error',
