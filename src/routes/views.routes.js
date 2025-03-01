@@ -11,18 +11,24 @@ const {
 } = require("../services/cartService");
 
 router.get("/", async (req, res) => {
-  const response = await getProducts(req, res); // Pasa req y res al controlador
+  const { page } = req.query;
+  const response = await getProducts(page && page); 
+
   if (response.status !== "success") {
       return console.error("Error de conexión");
   }
-  res.render("index", {
-      title: "Inicio",
+  
+  res.render("index", { title: "Inicio",
       products: response.payload,
-      totalPages: response.totalPages,
-      currentPage: response.currentPage,
-      totalProducts: response.totalProducts,
-      limit: response.limit // Pasa el límite a la vista
-  });
+      totalDocs: response.totalDocs,
+      limit: response.limit,
+      page: response.page,
+      pagingCounter: response.pagingCounter,
+      hasPrevPage: response.hasPrevPage,
+      hasNextPage: response.hasNextPage,
+      prevPage: response.prevPage,
+      nextPage: response.nextPage
+   });
 });
 
 

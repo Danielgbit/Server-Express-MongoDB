@@ -56,6 +56,8 @@ const handlebars = engine({
     eq: function (a, b) {
       return a === b;
     },
+    sumar: (a, b) => a + b,
+    restar: (a, b) => a - b,
   },
 });
 

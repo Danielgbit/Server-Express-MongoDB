@@ -4,7 +4,7 @@ const ProductModel = require('../models/product.model');
 
 const getProducts = async (req, res) => {
 
-    const { page = 1, limit = 10 } = req.query; 
+    const { page = 1, limit = 3 } = req.query; 
 
     const options = {
         page: parseInt(page, 10),
