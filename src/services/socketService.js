@@ -2,7 +2,7 @@ const { getProducts, addProduct, deleteProduct, updateProduct } = require("./pro
 
 const socketHandler = (io) => {
     io.on("connection", async (socket) => {
-        console.log("Cliente conectado");
+        console.log(`Cliente conectado con id: ${socket.id}`);
 
         // Enviar la lista de productos al conectar un cliente
         try {
