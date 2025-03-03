@@ -3,9 +3,9 @@ const axios = require("axios");
 const API_URL = "http://localhost:8080/api/products"; // Ajusta según tu configuración
 
 // Obtener todos los productos
-const getProducts = async (page) => {
+const getProducts = async (page, limit) => {
     try {
-        const response = await axios.get(`${API_URL}/?page=${page}`);
+        const response = await axios.get(`${API_URL}/?page=${page}&limit=${limit}`);
         return response.data;
     } catch (error) {
         console.error("Error al obtener productos:", error.message);

@@ -11,8 +11,8 @@ const {
 } = require("../services/cartService");
 
 router.get("/", async (req, res) => {
-  const { page } = req.query;
-  const response = await getProducts(page && page); 
+  const { page, limit = 3 } = req.query;
+  const response = await getProducts(page, limit);
 
   if (response.status !== "success") {
       return console.error("Error de conexión");

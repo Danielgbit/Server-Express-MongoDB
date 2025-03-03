@@ -6,7 +6,7 @@ const socketHandler = (io) => {
 
         // Enviar la lista de productos al conectar un cliente
         try {
-            const response = await getProducts();
+            const response = await getProducts(1, 30);
             if (response.status === "success") {
                 socket.emit("updateProducts", response.payload);
             } else {
@@ -25,7 +25,7 @@ const socketHandler = (io) => {
         socket.on("addProduct", async (product) => {
             try {
                 await addProduct(product);
-                const response = await getProducts();
+                const response = await getProducts(1, 30);
                 io.emit("updateProducts", response.payload);
             } catch (error) {
                 console.error("Error al agregar producto:", error);
@@ -36,7 +36,7 @@ const socketHandler = (io) => {
         socket.on("editProduct", async (updatedProduct) => {
             try {
                 await updateProduct(updatedProduct.id, updatedProduct);
-                const response = await getProducts();
+                const response = await getProducts(1, 30);
                 io.emit("updateProducts", response.payload);
             } catch (error) {
                 console.error("Error al actualizar producto:", error);
@@ -47,7 +47,7 @@ const socketHandler = (io) => {
         socket.on("deleteProduct", async (productId) => {
             try {
                 await deleteProduct(productId);
-                const response = await getProducts();
+                const response = await getProducts(1, 30);
                 io.emit("updateProducts", response.payload);
             } catch (error) {
                 console.error("Error al eliminar producto:", error);
