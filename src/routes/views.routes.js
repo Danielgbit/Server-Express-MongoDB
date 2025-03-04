@@ -139,9 +139,20 @@ router.get("/cart", async (req, res) => {
 router.post("/addProductInCart/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    
+    if (!req.session.cartId) {
+      const createCart = await postCreateCart();
+
+      if (!createCart || !createCart.payload || !createCart.payload._id) {
+        throw new Error("No se pudo crear el carrito");
+      }
+
+      req.session.cartId = createCart.payload._id;
+    }
+
     await postProductInCart({ cartId: req.session.cartId, productId: id });
 
-    res.redirect(`/cart/${req.session.cartId}`);
+    return res.redirect(`/cart/${req.session.cartId}`);
   } catch (error) {
     res
       .status(500)

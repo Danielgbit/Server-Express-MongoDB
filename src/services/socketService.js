@@ -32,16 +32,26 @@ const socketHandler = (io) => {
             }
         });
 
-        // Escuchar evento para editar productos
-        socket.on("editProduct", async (updatedProduct) => {
+        socket.on("editProduct", async (updatedProduct, callback) => {
             try {
-                await updateProduct(updatedProduct.id, updatedProduct);
+                console.log("Recibiendo producto actualizado:", updatedProduct);
+                const result = await updateProduct(updatedProduct.id, updatedProduct);
+        
+                if (result.success === false) {
+                    callback({ success: false, message: result.message });
+                    return;
+                }
+        
                 const response = await getProducts(1, 30);
-                io.emit("updateProducts", response.payload);
+                io.emit("updateProducts", response.payload); // Emitir actualización global
+                callback({ success: true });
             } catch (error) {
                 console.error("Error al actualizar producto:", error);
+                callback({ success: false, message: "Error interno del servidor" });
             }
         });
+        
+        
 
         // Escuchar evento para eliminar productos
         socket.on("deleteProduct", async (productId) => {

@@ -24,16 +24,17 @@ const getProductById = async (id) => {
     }
 };
 
-// Actualizar un producto por ID
 const updateProduct = async (id, updatedProduct) => {
     try {
         const response = await axios.put(`${API_URL}/update/${id}`, updatedProduct);
-        return response.data;
+        return { success: true, data: response.data };
     } catch (error) {
         console.error(`Error al actualizar el producto con ID ${id}:`, error.message);
-        return null;
+        return { success: false, message: "No se pudo actualizar el producto" };
     }
 };
+
+
 
 // Agregar un producto
 const addProduct = async (product) => {

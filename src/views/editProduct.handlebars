@@ -10,6 +10,7 @@
 <body class="body-editProduct"> 
     <h1 class="mt-5 mb-4 title-addProduct">Editar Producto</h1>
 <form id="editProductForm" class="mb-5">
+    <input type="hidden" id="productId" name="id" value={{product._id}}>
     <div class="mb-3 wrapper-form-editP">
         <label for="editTitle" class="form-label">Título:</label>
         <input type="text" class="form-control" id="editTitle" name="title" value="{{product.title}}" required>
@@ -27,26 +28,6 @@
     <a href="/realtimeproducts" class="button-realTimeP">Volver a la lista de productos</a>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-
-        // Manejar el envío del formulario de edición
-        document.getElementById("editProductForm").addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            const updatedProduct = {
-                id: "{{product.id}}", // ID del producto
-                title: document.getElementById("editTitle").value,
-                price: document.getElementById("editPrice").value,
-                description: document.getElementById("editDescription").value,
-            };
-
-            // Enviar los datos actualizados al servidor
-            socket.emit("editProduct", updatedProduct);
-
-            // Redirigir a la lista de productos después de actualizar
-            window.location.href = "/realtimeproducts";
-        });
-    </script>
+    <script src="/js/editProduct.js"></script>
 </body>
 </html>

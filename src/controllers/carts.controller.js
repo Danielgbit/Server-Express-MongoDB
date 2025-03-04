@@ -65,6 +65,9 @@ const getCart = async (req, res) => {
 const addProductToCart = async (req, res) => {
   try {
     const { cartId, productId } = req.params;
+
+    console.log(cartId, productId);
+    
     const cart = await CartModel.findById(cartId);
     if (!cart) {
       return res.status(404).json({ status: "error", message: "Carrito no encontrado" });
